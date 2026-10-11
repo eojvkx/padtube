@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!------------------------------------------------------------------------------------------
+   ■ヘッダ
+-------------------------------------------------------------------------------------------->
+<head>
+
+    <meta charset="UTF-8">
+
+    <!-- ファビコン -->
+    <link rel="icon" href="https://eojvkx.github.io/jvstation/favicon.png">
+
+    <!-- タイトル -->
+    <title>JVStation | 初心者向け競馬予想・分析システム</title>
+    <meta name="description" content="JVStationは、JRAVANデータを活用した初心者向け競馬予想・分析システムです。出馬表や過去成績をわかりやすく表示し、競馬予想をサポートします。">
+    <meta name="keywords" content="競馬, 競馬予想, JRAVAN, JRA, 出馬表, レース分析, 初心者向け, JVStation">
+    <meta name="author" content="JVStation">
+
+    <!-- OGP -->
+    <meta property="og:title" content="JVStation | 初心者向け競馬予想・分析システム">
+    <meta property="og:description" content="JRAVANデータを活用した初心者向け競馬予想・分析システム。出馬表や過去成績をわかりやすく表示し、競馬予想をサポートします。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://eojvkx.github.io/jvstation/">
+    <meta property="og:image" content="https://eojvkx.github.io/jvstation/ogp.jpg">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="JVStation | 初心者向け競馬予想・分析システム">
+    <meta name="twitter:description" content="JRAVANデータを活用した初心者向け競馬予想・分析システム。">
+    <meta name="twitter:image" content="https://eojvkx.github.io/jvstation/ogp.jpg">
+
+    <link rel="icon" href="favicon.ico">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MNQ3QNEH7T"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-MNQ3QNEH7T');
+    </script>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-------------------------------------------------------------------------------------------
+     ■Style
+    -------------------------------------------------------------------------------------------->
+    <style>
+
+        /* ===== PC版を中央固定 ===== */
+        html {
+            overflow-x: auto;
+        }
+
+        body {
+            margin: 0 auto;
+            padding: 0;
+            font-family: system-ui, sans-serif;
+            background: #fff;
+        }
+
+        /* アンカー位置調整 */
+        [id] {
+            scroll-margin-top: 120px;
+        }
+
+        /* ===== 上部バー ===== */
+        .top-bar {
+            width: 100%;
+            background: #fff;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10000;
+        }
+
+        .top-bar-inner {
+            width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-logo img {
+            height: 37px;
+            display: block;
+        }
+
+        /* ボタン共通 */
+        .top-buttons a {
+            margin-right: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+            /* SNSボタン */
+            .top-buttons a.sns-btn {
+                padding: 0;
+                background: none;
+                border-radius: 0;
+            }
+
+        .sns-btn img.sns-icon {
+            height: 32px;
+            width: auto;
+            display: block;
+        }
+
+        /* ===== メニューバー ===== */
+        .menu-bar {
+            width: 100%;
+            background: #333;
+            padding: 2px 0;
+            position: fixed;
+            top: 56px;
+            left: 0;
+            z-index: 9999;
+        }
+
+            .menu-bar a {
+                color: #333; /* 通常時 */
+                text-decoration: none;
+                transition: color 0.3s;
+            }
+
+                .menu-bar a:hover {
+                    color: #ff6600; /* マウスを乗せた時 */
+                }
+
+        .menu-inner {
+            width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+        }
+
+            .menu-inner a {
+                color: #fff;
+                text-decoration: none;
+                padding: 6px 10px;
+                font-size: 14px;
+            }
+
+        /* ===== 本文 ===== */
+        .site-container {
+            width: 1000px;
+            margin: 40px auto 20px;
+            padding-left: 10px;
+        }
+
+        .first-block {
+            margin-top: 120px !important;
+        }
+
+        /* ===== スライドショー ===== */
+        .slideshow {
+            width: 1000px;
+            height: 300px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slide {
+            width: 1000px;
+            height: 300px;
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+            .slide img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .slide.active {
+                display: block;
+            }
+
+        /* ドット */
+        .dots {
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .dot {
+            font-size: 20px;
+            margin: 0 4px;
+            color: #aaa;
+            cursor: pointer;
+        }
+
+            .dot.active {
+                color: #333;
+            }
+
+        /* ===== アコーディオン ===== */
+        .accordion {
+            margin: 20px 0;
+        }
+
+        .img-box {
+            position: relative;
+            display: inline-block;
+        }
+
+            .img-box img {
+                width: 1000px;
+                display: block;
+            }
+
+        .img-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 6px 12px;
+            background: #007bff;
+            color: #fff;
+            font-size: 13px;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+        details summary {
+            font-size: 16px;
+            padding: 6px;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        details p, details h2, details h3, details h4 {
+            padding: 6px;
+            font-size: 16px;
+        }
+
+
+
+        /* ===== jvstation.zipダウンロード ===== */
+        .jvstation-download-zip {
+            position: absolute;
+            display: inline-block;
+            top: 115px;
+            right: 50px;
+            padding: 6px 12px;
+            background: #ff7500;
+            color: #fff;
+            font-size: 18px;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+            .jvstation-download-zip:hover {
+                background: #ff9c00;
+            }
+
+        /* ===== jravanサイトダウンロード ===== */
+        .jvstation-download-jravan {
+            position: absolute;
+            top: 235px;
+            right: 50px;
+            padding: 6px 20px;
+            background: #007bff;
+            color: #fff;
+            font-size: 16px;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+            .jvstation-download-jravan:hover {
+                background: #08268a;
+            }
+
+        /* ===== 取扱い説明書サイトダウンロード ===== */
+        .jvstation-download-pdf {
+            position: absolute;
+            top: 350px;
+            right: 50px;
+            padding: 6px 20px;
+            background: #ff0000;
+            color: #fff;
+            font-size: 17px;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+            .jvstation-download-pdf:hover {
+                background: #dc4288;
+            }
+
+        /* ===== フッター ===== */
+        .footer {
+            width: 100%;
+            background: #333;
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+
+        .footer-inner {
+            width: 1000px;
+            margin: 0 auto;
+            margin-bottom: 10px;
+            text-align: center;
+            color: #fff;
+            font-size: 14px;
+        }
+    </style>
+
+</head>
+
+
+<!------------------------------------------------------------------------------------------
+   ■ボディー
+-------------------------------------------------------------------------------------------->
+<body>
+
+    <!-- ===== 上部バー ===== -->
+    <div class="top-bar">
+        <div class="top-bar-inner">
+
+            <div class="top-logo">
+                <a href="index.html"><img src="logo.png" alt="サイトロゴ"></a>
+            </div>
+
+            <div class="top-buttons">
+                <a href="https://x.com" class="sns-btn">
+                    <img src="x.png" class="sns-icon">
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== メニューバー ===== -->
+    <div class="menu-bar">
+        <div class="menu-inner">
+            <a href="#home">HOME</a>
+            <a href="#oshirase">おしらせ</a>
+            <a href="#gaiyou">概要</a>
+            <a href="#dousakankyo">動作環境</a>
+            <!--<a href="./setup/index.html">セットアップ</a>-->
+            <a href="#setup">セットアップ</a>
+            <a href="#qanda">Ｑ＆Ａ</a>
+            <a href=""></a>
+            <a href="#otoiawase">お問い合わせ</a>
+            <a href="#otoiawase">不具合報告</a>
+        </div>
+    </div>
+
+    <!-- ===== スライドショー ===== -->
+    <div id="home"></div>
+    <div class="site-container first-block">
+
+        <div class="slideshow" id="slideshow">
+            <a href="" class="slide active"><img src="slide1.png"></a>
+            <a href="" class="slide"><img src="slide2.png"></a>
+            <a href="" class="slide"><img src="slide3.png"></a>
+        </div>
+
+        <div class="dots">
+            <span class="dot active">●</span>
+            <span class="dot">●</span>
+            <span class="dot">●</span>
+        </div>
+
+        <!-- ===== お知らせ ===== -->
+        <div class="accordion" id="oshirase">
+            <div class="img-box">
+                <img src="oshirase.png">
+                <a class="jvstation-download-zip" href="jvstation.zip" download>ZIPをダウンロード</a>
+                <a class="jvstation-download-jravan" href="https://jra-van.jp" download>JRA-VANサイト</a>
+                <a class="jvstation-download-pdf" href="JVStation説明書.pdf" download>取扱い説明書</a>
+            </div>
+            <details>
+                <summary></summary>
+                <h2>JVStation Ver1.0 公開のお知らせ</h2>
+                <p>
+                    長い準備期間を経て、このたび「JVStation Ver1.0」をリリースいたしました。
+                    JVStationは、JRAVANデータを活用し、競馬をこれから始める方でも楽しみながら予想できる環境を目指して開発しました。
+                    初めての公開となるため改善点もあるかと思いますが、皆さまからのご意見を参考にしながら、より使いやすいシステムへ成長させていきたいと考えています。
+                    ぜひ右側のダウンロードボタンからお試しください。
+                </p>
+
+            </details>
+        </div>
+
+        <!-- ===== 概要 ===== -->
+        <div class="accordion" id="gaiyou">
+            <div class="img-box">
+                <img src="gaiyou1.png">
+
+            </div>
+            <details>
+                <summary></summary>
+                <h2>競馬データを、もっと身近に、もっと分かりやすく</h2>
+                <p>
+                    JVStationは、JRAVANのJV-Linkから取得した競馬データをPC内のSQLiteデータベースに保存し、
+                    出馬表や過去成績などの各種情報を見やすく表示・分析できる競馬支援ソフトです。
+                    初心者の方でも直感的に利用できることを目指し、競馬予想やレース分析をサポートします。
+                </p>
+                <h2>JVStationメイン画面</h2>
+                <p>
+                    JVStationのメイン画面は、開催日からレース、出走馬情報までをスムーズに確認できるよう設計されています。
+                    開催日を選択するだけで各競馬場の1R～12Rを一覧表示。レースを選択すると出走馬情報やレースデータを確認
+                    できます。レース結果確定後は、着順や払戻金も表示されるため、予想から結果分析まで一つの画面で行えます。
+                </p>
+                <h2>JVStation出走馬戦績画面</h2>
+                <p>
+                    出走馬戦績画面では、選択した競走馬の過去レース成績を一覧で確認できます。
+                    レースごとの着順やタイム、人気、競馬場、距離などの情報を分かりやすく表示。過去の成績を振り返りながら、
+                    今回のレース条件との比較や分析を行うことができます。
+                    競馬初心者の方でも、馬の実績や傾向を直感的に把握できるよう設計されています。
+                    「過去を知ることで、次のレースがもっと見えてくる」
+                </p>
+                <h2>JVStation騎手戦績画面</h2>
+                <p>
+                    出走騎手戦績画面では、選択した騎手の過去レース成績を一覧で確認できます。
+                    レースごとの着順や人気、競馬場、距離などの情報を分かりやすく表示。過去の騎乗成績を振り返りながら、
+                    今回のレース条件との相性や傾向を分析することができます。
+                    競馬初心者の方でも、騎手の実績や特徴を直感的に把握できるよう設計されています。
+                    「騎手を知ることで、レースの見方がもっと広がる」
+                </p>
+
+            </details>
+        </div>
+
+        <!-- ===== 動作環境 ===== -->
+        <div class="accordion" id="dousakankyo">
+            <div class="img-box">
+                <img src="dousakankyo.png">
+            </div>
+        </div>
+
+        <!-- ===== セットアップ ===== -->
+        <div class="accordion" id="setup">
+            <div class="img-box">
+                <img src="setup.png">
+            </div>
+        </div>
+
+        <!-- ===== Q&A ===== -->
+        <div class="accordion" id="qanda">
+            <div class="img-box">
+                <img src="qanda.png">
+            </div>
+            <details>
+                <summary></summary>
+                <h2>Q. 	JVStationは無料で利用できますか？</h2>
+                <p>
+                    A. 	はい。JVStation本体は無料でご利用いただけます。ただし、競馬データの取得にはJRAVAN Data Lab.の契約が必要です。
+                </p>
+
+                <h2>Q. 	JVStationを利用するために必要なものは何ですか？</h2>
+                <p>
+                    A. 	Windows 10またはWindows 11、JRAVAN Data Lab.の契約、およびJV-Linkのインストールが必要です。
+                </p>
+
+                <h2>Q. 	初心者でも利用できますか？</h2>
+                <p>
+                    A. 	はい。JVStationは競馬初心者の方でも扱いやすいように設計されています。
+                </p>
+
+                <h2>Q. 	競馬データはどこに保存されますか？</h2>
+                <p>
+                    A. 	取得した競馬データは、お使いのPC内のSQLiteデータベースに保存されます。データはローカル環境で管理されるため、
+                    高速な検索や分析が可能です。
+                </p>
+
+                <h2>Q. 	インターネット接続は必要ですか？</h2>
+                <p>
+                    A. 	JRAVANからデータを取得する際にはインターネット接続が必要です。保存済みデータの閲覧や分析については、
+                    一部機能を除きオフラインでも利用できます。
+                </p>
+
+                <h2>Q. 	Microsoft .NET Runtimeのインストールは必要ですか？</h2>
+                <p>
+                    A. 	いいえ。JVStationは自己完結型（Self-contained）で配布されているため、別途.NET Runtimeをインストールする
+                    必要はありません。
+                </p>
+
+                <h2>Q. 	動作がおかしい場合はどうすればよいですか？</h2>
+                <p>
+                    A. 	まず最新版をご利用いただいているかご確認ください。問題が解決しない場合は、
+                    お問い合わせより症状をご連絡ください。
+                </p>
+
+                <h2>Q. 	今後の機能追加予定はありますか？</h2>
+                <p>
+                    A. はい。JVStationは継続的な機能改善と追加を予定しています。今後のアップデート情報は当サイトの	はい。JVStationは継続的な機能改善と追加を予定しています。今後のアップデート情報は当サイトの
+                    お知らせをご確認ください。
+                </p>
+
+                <h2>Q. 	要望や不具合報告はできますか？</h2>
+                <p>
+                    A. はい。皆さまからのご意見やご要望は大歓迎です。不具合報告や改善要望は、メールでお寄せください。	はい。皆さまからのご意見やご要望は大歓迎です。不具合報告や改善要望は、メールでお寄せください。
+                </p>
+
+            </details>
+        </div>
+
+        <!-- ===== お問い合わせ ===== -->
+        <div class="accordion" id="otoiawase">
+            <div class="img-box">
+                <img src="otoiawase.png">
+            </div>
+        </div>
+
+    </div>
+
+  
+    <!-- ===== フッター ===== -->
+    <div class="footer">
+        <div class="footer-inner">
+
+            Copyright(c) 2026 JVStation All Rights Reserved.
+
+        </div>
+    </div>
+
+
+
+    <script>
+        let slideIndex = 0;
+        const slides = document.querySelectorAll(".slide");
+        const dots = document.querySelectorAll(".dot");
+        const slideshow = document.querySelector(".slideshow");
+        const dotsContainer = document.querySelector(".dots");
+
+        let timer = null;
+
+        function showSlide(n) {
+            slides.forEach((s, i) => s.classList.toggle("active", i === n));
+            dots.forEach((d, i) => d.classList.toggle("active", i === n));
+        }
+
+        function startSlider() {
+            if (timer) return;
+            timer = setInterval(() => {
+                slideIndex = (slideIndex + 1) % slides.length;
+                showSlide(slideIndex);
+            }, 5000);
+        }
+
+        function stopSlider() {
+            if (!timer) return;
+            clearInterval(timer);
+            timer = null;
+        }
+
+        dots.forEach((dot, index) => {
+            dot.addEventListener("click", () => {
+                slideIndex = index;
+                showSlide(slideIndex);
+            });
+        });
+
+        [slideshow, dotsContainer].forEach(el => {
+            el.addEventListener("mouseenter", stopSlider);
+            el.addEventListener("mouseleave", startSlider);
+        });
+
+        showSlide(slideIndex);
+        startSlider();
+    </script>
+
+</body>
+</html>
